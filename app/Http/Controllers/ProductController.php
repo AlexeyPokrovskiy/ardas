@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductSeach;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -15,8 +16,8 @@ class ProductController extends Controller
     public function index()
     {
         return view('product.index',[
-            'products'=>Product::paginate(10)
-        ]);
+            "products"=>Product::paginate(10),
+            ]);
     }
 
     /**
@@ -105,5 +106,12 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('product.index');
+    }
+
+    public function getProducts(Request $request)
+    {
+        $products = (new ProductSeach(Product::query(),$request))->apply()->get();
+
+        return response()->json($products->toArray());
     }
 }
